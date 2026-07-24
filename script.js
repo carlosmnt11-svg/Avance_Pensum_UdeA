@@ -1,5 +1,5 @@
 'use strict';
-console.log('Pénsum UdeA — build 2026-07-24.3');
+console.log('Pénsum UdeA — build 2026-07-24.5');
 
 /* ==========================================================================
    PERFIL Y PÉNSUM ACTIVOS — cada persona elige su frase y su pénsum;
@@ -2061,6 +2061,7 @@ function initStatTooltips() {
 function init() {
   $('#meta-program').textContent = `${PROGRAM_META.program} · ${PROGRAM_META.university}`;
   $('#footer-pensum-label').textContent = `Datos extraídos del pénsum oficial · Programa [${PROGRAM_META.programCode}] ${PROGRAM_META.program} · ${PROGRAM_META.university}`;
+  $('#hero-program-label').textContent = `Programa [${PROGRAM_META.programCode}] ${PROGRAM_META.program}`;
   $('#switch-profile-btn').addEventListener('click', switchProfileOrPensum);
 
   renderAccentSwatches();
