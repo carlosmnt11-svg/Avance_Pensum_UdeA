@@ -58,7 +58,11 @@ function activatePensum(pensumKey) {
   PROGRAM_META = JSON.parse(JSON.stringify(def.meta));
   ELECTIVE_CREDITS_REQUIRED = def.electiveCreditsRequired;
   CORE_LEVELS = def.coreLevels;
+  CORE_CREDITS_TOTAL = COURSES.filter(c => c.type === 'nucleo').reduce((s, c) => s + c.credits, 0);
+  PROGRAM_CREDITS_TOTAL = CORE_CREDITS_TOTAL + ELECTIVE_CREDITS_REQUIRED;
   rebuildByCode();
+  const mark = document.getElementById('brand-mark');
+  if (mark) mark.innerHTML = PENSUM_ICONS[pensumKey] || PENSUM_ICON_DEFAULT;
   return true;
 }
 
@@ -95,6 +99,14 @@ const ACCENT_PRESETS = {
   rosa:    { accent: '#F472B6', soft: 'rgba(244, 114, 182, 0.14)', glow: 'rgba(244, 114, 182, 0.35)', label: 'Rosa' },
   coral:   { accent: '#F76C6C', soft: 'rgba(247, 108, 108, 0.14)', glow: 'rgba(247, 108, 108, 0.35)', label: 'Coral' },
 };
+
+// Cada pénsum tiene su propio logo, para diferenciarlos a simple vista.
+const PENSUM_ICONS = {
+  'mate-v6': `<svg width="21" height="21" viewBox="0 0 24 24" fill="none"><path d="M12 19L18 5M12 19L6 5M8.5 11H15.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
+  'mate-v5': `<svg width="21" height="21" viewBox="0 0 24 24" fill="none"><path d="M12 19L18 5M12 19L6 5M8.5 11H15.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
+  'astro-v4': `<svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="4.3" fill="currentColor"/><circle cx="8.7" cy="8.8" r="1.15" fill="rgba(0,0,0,0.22)"/><ellipse cx="11" cy="12.2" rx="10.2" ry="3" transform="rotate(-24 11 12.2)" stroke="currentColor" stroke-width="1.5"/><circle cx="19.5" cy="5.2" r="1" fill="currentColor"/><circle cx="4" cy="17.5" r="0.7" fill="currentColor"/></svg>`,
+};
+const PENSUM_ICON_DEFAULT = `<svg width="21" height="21" viewBox="0 0 24 24" fill="none"><path d="M3.5 3.5V19.5C3.5 20.0523 3.94772 20.5 4.5 20.5H20.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 15.5C7.2 6.3 12.5 5.8 14.3 11.6C16 17 19 9.5 20 6" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 let COURSES = [];
 let PROGRAM_META = {};
@@ -625,8 +637,8 @@ function creditsApprovedElective() {
     .reduce((sum, c) => sum + c.credits, 0);
 }
 
-const CORE_CREDITS_TOTAL = COURSES.filter(c => c.type === 'nucleo').reduce((s, c) => s + c.credits, 0);
-const PROGRAM_CREDITS_TOTAL = CORE_CREDITS_TOTAL + ELECTIVE_CREDITS_REQUIRED;
+let CORE_CREDITS_TOTAL = 0;
+let PROGRAM_CREDITS_TOTAL = 0;
 
 function prereqsMet(course) {
   const creditsOk = creditsApproved() >= course.creditGate;
