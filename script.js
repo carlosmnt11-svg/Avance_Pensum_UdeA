@@ -1,4 +1,5 @@
 'use strict';
+console.log('Pénsum UdeA — build 2026-07-24.3');
 
 /* ==========================================================================
    PERFIL Y PÉNSUM ACTIVOS — cada persona elige su frase y su pénsum;
@@ -769,7 +770,7 @@ function renderDashboard() {
   $('#dash-failed-count').textContent = countBy(c => getState(c.code) === 'perdida');
   $('#dash-available-count').textContent = countBy(c => isAvailable(c));
   $('#dash-total-subjects').textContent = COURSES.length;
-  $('#dash-seen-count').textContent = countBy(c => getState(c.code) !== 'no-cursada');
+  $('#dash-seen-count').textContent = countBy(c => c.type === 'electiva' && getState(c.code) !== 'no-cursada');
 
   renderLevelProgress();
   renderLegend('#dash-legend');
@@ -2017,7 +2018,7 @@ function renderAccentSwatches() {
 
 function statusMatchesCourse(course, statusKey) {
   if (statusKey === 'disponible') return isAvailable(course);
-  if (statusKey === 'vistas') return getState(course.code) !== 'no-cursada';
+  if (statusKey === 'electivas-vistas') return course.type === 'electiva' && getState(course.code) !== 'no-cursada';
   return getState(course.code) === statusKey;
 }
 
