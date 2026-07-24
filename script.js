@@ -1,5 +1,5 @@
 'use strict';
-console.log('Pénsum UdeA — build 2026-07-24.5');
+console.log('Pénsum UdeA — build 2026-07-24.6');
 
 /* ==========================================================================
    PERFIL Y PÉNSUM ACTIVOS — cada persona elige su frase y su pénsum;
@@ -765,9 +765,9 @@ function renderDashboard() {
     { key: 'en-curso', label: 'Materias en curso' },
     { key: 'perdida', label: 'Materias perdidas' },
   ];
-  $('#dash-approved-count').textContent = countBy(c => getState(c.code) === 'aprobada');
-  $('#dash-progress-count').textContent = countBy(c => getState(c.code) === 'en-curso');
-  $('#dash-failed-count').textContent = countBy(c => getState(c.code) === 'perdida');
+  $('#dash-approved-count').textContent = countBy(c => getState(c.code) === 'aprobada') + extraGrades.filter(e => e.status === 'aprobada').length;
+  $('#dash-progress-count').textContent = countBy(c => getState(c.code) === 'en-curso') + inProgressExtras.length;
+  $('#dash-failed-count').textContent = countBy(c => getState(c.code) === 'perdida') + extraGrades.filter(e => e.status === 'perdida').length;
   $('#dash-available-count').textContent = countBy(c => isAvailable(c));
   $('#dash-total-subjects').textContent = COURSES.length;
   $('#dash-seen-count').textContent = countBy(c => c.type === 'electiva' && getState(c.code) !== 'no-cursada');
@@ -2029,7 +2029,16 @@ function initStatTooltips() {
     const statusKey = card.dataset.status;
     card.addEventListener('mouseenter', () => {
       const matches = COURSES.filter(c => statusMatchesCourse(c, statusKey))
+        .map(c => ({ code: c.code, name: c.name, level: c.level, extra: false }))
         .sort((a, b) => (a.level - b.level) || a.name.localeCompare(b.name));
+
+      if (statusKey === 'aprobada') {
+        extraGrades.filter(e => e.status === 'aprobada').forEach(e => matches.push({ code: e.code, name: e.name, extra: true }));
+      } else if (statusKey === 'perdida') {
+        extraGrades.filter(e => e.status === 'perdida').forEach(e => matches.push({ code: e.code, name: e.name, extra: true }));
+      } else if (statusKey === 'en-curso') {
+        inProgressExtras.forEach(item => matches.push({ code: item.code, name: item.name, extra: true }));
+      }
 
       tooltip.innerHTML = '';
       if (matches.length === 0) {
@@ -2039,6 +2048,7 @@ function initStatTooltips() {
           tooltip.appendChild(el('div', { class: 'stat-tooltip-item' }, [
             el('span', { class: 'mono stat-tooltip-code' }, c.code),
             el('span', { class: 'stat-tooltip-name' }, c.name),
+            c.extra ? el('span', { class: 'stat-tooltip-tag' }, 'Adicional') : null,
           ]));
         });
       }

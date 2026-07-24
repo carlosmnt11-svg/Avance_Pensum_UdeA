@@ -359,6 +359,11 @@ button { font-family: inherit; }
 .stat-tooltip-item:hover { background: var(--surface-hover); }
 .stat-tooltip-code { color: var(--text-tertiary); flex: 0 0 auto; font-size: 10.5px; }
 .stat-tooltip-name { color: var(--text-primary); }
+.stat-tooltip-tag {
+  font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em;
+  padding: 1px 6px; border-radius: 20px; background: var(--accent-soft); color: var(--accent);
+  flex: 0 0 auto;
+}
 .stat-tooltip-empty { padding: 8px; font-size: 12px; color: var(--text-tertiary); text-align: center; }
 .stat-card-icon { width: 9px; height: 9px; border-radius: 50%; }
 .stat-card-num { font-family: var(--font-mono); font-size: 24px; font-weight: 600; }
